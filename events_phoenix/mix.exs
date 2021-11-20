@@ -48,7 +48,8 @@ defmodule EventsPhoenix.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:kaffy, git: "git@github.com:aesmail/kaffy.git", ref: "43178b83088e22277fa90456ccc0b9df8cdb0cc0"},
     ]
   end
 

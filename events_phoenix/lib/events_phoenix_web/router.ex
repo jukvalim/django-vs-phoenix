@@ -25,6 +25,14 @@ defmodule EventsPhoenixWeb.Router do
   #   pipe_through :api
   # end
 
+  # :scope defaults to "/admin"
+  # :pipe_through defaults to kaffy's [:kaffy_browser]
+  # when providing pipelines, they will be added after :kaffy_browser
+  # so the actual pipe_through for the previous line is:
+  # [:kaffy_browser, :some_plug, :authenticate]
+  use Kaffy.Routes, scope: "/admin" #, pipe_through: [:some_plug, :authenticate]
+
+
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
