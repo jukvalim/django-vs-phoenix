@@ -1,6 +1,8 @@
 defmodule EventsPhoenixWeb.Router do
   use EventsPhoenixWeb, :router
 
+  import EventsPhoenixWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,7 @@ defmodule EventsPhoenixWeb.Router do
     plug :put_root_layout, {EventsPhoenixWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -38,7 +41,8 @@ defmodule EventsPhoenixWeb.Router do
   # when providing pipelines, they will be added after :kaffy_browser
   # so the actual pipe_through for the previous line is:
   # [:kaffy_browser, :some_plug, :authenticate]
-  use Kaffy.Routes, scope: "/admin" #, pipe_through: [:some_plug, :authenticate]
+  use Kaffy.Routes, scope: "/admin", pipe_through: [
+    :kaffy_browser, :fetch_current_user, :require_authenticated_user]
 
 
   # Enables LiveDashboard only for development
@@ -67,5 +71,38 @@ defmodule EventsPhoenixWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", EventsPhoenixWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", EventsPhoenixWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/", EventsPhoenixWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
   end
 end
