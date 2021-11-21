@@ -22,6 +22,12 @@ defmodule EventsPhoenixWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/api", EventsPhoenixWeb.EventsApi, as: :events_api do
+    pipe_through :api
+
+    resources "/events", EventController
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", EventsPhoenixWeb do
   #   pipe_through :api
