@@ -25,6 +25,17 @@ defmodule EventsPhoenixWeb.Router do
     get "/", PageController, :index
   end
 
+  scope "/live", EventsPhoenixWeb do
+    pipe_through :browser
+
+    live "/events", EventLive.Index, :index
+    live "/events/new", EventLive.Index, :new
+    live "/events/:id/edit", EventLive.Index, :edit
+
+    live "/events/:id", EventLive.Show, :show
+    live "/events/:id/show/edit", EventLive.Show, :edit
+  end
+
   scope "/api", EventsPhoenixWeb.EventsApi, as: :events_api do
     pipe_through :api
 
