@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+        td, table { border: 1px solid black; }
+    </style>
+    <h2>Events</h2>
+    <table>
+        {% for event in object_list %}
+        <tr>
+            <td>{{ event.name }}</a></td>
+            <td>{{ event.start_time }}</a></td>
+            <td>{{ event.end_time }}</a></td>
+            <td>{{ event.description }}</a></td>
+
+            <td><a href="{% url 'event-detail' event.id %}">Show</a></td>
+            <td><a href="{% url 'event-update' event.id %}">Edit</a></td>
+            <td><a href="{% url 'event-delete' event.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr/>
+    <a href="{% url 'event-create' %}">New Event</a>
+{% endblock %}

@@ -17,6 +17,8 @@ defmodule EventsPhoenixWeb.Router do
   scope "/", EventsPhoenixWeb do
     pipe_through :browser
 
+    resources "/events", EventController
+
     get "/", PageController, :index
   end
 
